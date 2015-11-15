@@ -47,7 +47,7 @@ RUN apk --update add --virtual build_deps build-base zlib-dev pcre-dev openssl-d
     && cd .. && rm -rf nginx-$NGINX_VERSION \
     && mkdir /var/cache/nginx \
     && rm /etc/nginx/*.default \
-    && apk del build_deps
+    && apk del build_deps && rm /var/cache/apk/*
 
 COPY nginx.conf /etc/nginx/
 ADD  conf.d /etc/nginx/conf.d
