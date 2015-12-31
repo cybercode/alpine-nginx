@@ -1,5 +1,5 @@
-FROM alpine:edge
-ENV NGINX_VERSION=1.9.6
+FROM alpine:3.3
+ENV NGINX_VERSION=1.9.9
 
 RUN apk --update add pcre libbz2 ca-certificates
 
