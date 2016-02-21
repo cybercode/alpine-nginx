@@ -1,7 +1,7 @@
 FROM alpine:3.3
-ENV NGINX_VERSION=1.9.9
+ENV NGINX_VERSION=1.9.11
 
-RUN apk --update add pcre libbz2 ca-certificates
+RUN apk --update add pcre libbz2 ca-certificates && rm /var/cache/apk/*
 
 RUN adduser -h /etc/nginx -D -s /bin/sh nginx
 WORKDIR /tmp
@@ -55,4 +55,4 @@ ADD  conf.d /etc/nginx/conf.d
 VOLUME ["/var/cache/nginx"]
 EXPOSE 80 443
 
-CMD ["nginx"]
+CMD ["nginx", "-g", "daemon off;"]
