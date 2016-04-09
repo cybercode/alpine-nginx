@@ -1,5 +1,5 @@
 FROM alpine:3.3
-ENV NGINX_VERSION=1.9.11
+ENV NGINX_VERSION=1.9.14
 
 RUN apk --update add pcre libbz2 ca-certificates && rm /var/cache/apk/*
 
