@@ -1,5 +1,5 @@
 FROM alpine:3.3
-ENV NGINX_VERSION=1.9.14
+ENV NGINX_VERSION=1.10.0
 
 RUN apk --update add pcre libbz2 ca-certificates && rm /var/cache/apk/*
 
@@ -32,6 +32,7 @@ RUN apk --update add --virtual build_deps build-base zlib-dev pcre-dev openssl-d
        --with-http_ssl_module \
        --with-http_stub_status_module \
        --with-http_sub_module \
+       --with-http_v2_module \
        --with-threads \
        --with-stream \
        --with-stream_ssl_module \
