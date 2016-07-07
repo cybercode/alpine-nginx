@@ -1,5 +1,5 @@
-FROM alpine:3.3
-ENV NGINX_VERSION=1.10.0
+FROM alpine:3.4
+ENV NGINX_VERSION=1.10.1
 
 RUN apk --update add pcre libbz2 ca-certificates && rm /var/cache/apk/*
 
@@ -41,6 +41,7 @@ RUN apk --update add --virtual build_deps build-base zlib-dev pcre-dev openssl-d
        --without-mail_imap_module \
        --without-mail_smtp_module \
        --with-http_v2_module \
+       --with-pcre-jit \
        --with-cc-opt='-g -O2 -fstack-protector-strong -Wformat -Werror=format-security' \
        --with-ld-opt='-Wl,-z,relro -Wl,--as-needed' \
        --with-ipv6 \
