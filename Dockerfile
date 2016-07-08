@@ -40,7 +40,6 @@ RUN apk --update add --virtual build_deps build-base zlib-dev pcre-dev openssl-d
        --without-mail_pop3_module \
        --without-mail_imap_module \
        --without-mail_smtp_module \
-       --with-http_v2_module \
        --with-pcre-jit \
        --with-cc-opt='-g -O2 -fstack-protector-strong -Wformat -Werror=format-security' \
        --with-ld-opt='-Wl,-z,relro -Wl,--as-needed' \

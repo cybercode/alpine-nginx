@@ -1,12 +1,6 @@
 # Alpine Nginx
 
-This is a `Dockerfile` to build an nginx container `FROM` [Alpine edge](https://hub.docker.com/_/alpine/). The results of this change can be seen in the abbreviated `docker images` output below:
-
-``` sh
-REPOSITORY          TAG        IMAGE ID          VIRTUAL SIZE
-cybercode/nginx     latest     7dd3f5d3ff61      15.25 MB
-nginx               1.9.6      81415e35fc6c      132.7 MB
-```
+This is a `Dockerfile` to build an nginx container `FROM` [Alpine 3.4](https://hub.docker.com/_/alpine/).
 
 The configuration is almost identical the the [official Nginx container](https://hub.docker.com/_/nginx/), with the exception of the following changes:
 
@@ -28,6 +22,7 @@ The configuration is almost identical the the [official Nginx container](https:/
 
 ## Added configuration options
 
+- --with-pcre-jit
 - --without-http_memcached_module
 - --without-mail_pop3_module
 - --without-mail_imap_module
