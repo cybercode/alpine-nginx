@@ -1,13 +1,13 @@
 FROM alpine:3.5
 ENV NGINX_VERSION=1.10.2
 
-RUN apk --update add pcre libbz2 ca-certificates && rm /var/cache/apk/*
+RUN apk --update add pcre libbz2 ca-certificates libressl && rm /var/cache/apk/*
 
 RUN adduser -h /etc/nginx -D -s /bin/sh nginx
 WORKDIR /tmp
 
 # add compilation env, build required C based gems and cleanup
-RUN apk --update add --virtual build_deps build-base zlib-dev pcre-dev openssl-dev \
+RUN apk --update add --virtual build_deps build-base zlib-dev pcre-dev libressl-dev \
     && wget -O - http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz | tar xzf - \
     && cd nginx-$NGINX_VERSION && ./configure \
        --prefix=/usr/share/nginx \
