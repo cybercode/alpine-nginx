@@ -1,14 +1,16 @@
-FROM alpine:3.5
-ENV NGINX_VERSION=1.10.2
+ARG ALPINE_VERSION=3.6
+FROM alpine:$ALPINE_VERSION
 
 RUN apk --update add pcre libbz2 ca-certificates libressl && rm /var/cache/apk/*
 
 RUN adduser -h /etc/nginx -D -s /bin/sh nginx
 WORKDIR /tmp
 
+ENV NGINX_VERSION=1.12.1
+
 # add compilation env, build required C based gems and cleanup
 RUN apk --update add --virtual build_deps build-base zlib-dev pcre-dev libressl-dev \
-    && wget -O - http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz | tar xzf - \
+    && wget -O - https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz | tar xzf - \
     && cd nginx-$NGINX_VERSION && ./configure \
        --prefix=/usr/share/nginx \
        --sbin-path=/usr/sbin/nginx \
@@ -43,7 +45,6 @@ RUN apk --update add --virtual build_deps build-base zlib-dev pcre-dev libressl-
        --with-pcre-jit \
        --with-cc-opt='-g -O2 -fstack-protector-strong -Wformat -Werror=format-security' \
        --with-ld-opt='-Wl,-z,relro -Wl,--as-needed' \
-       --with-ipv6 \
     && make install \
     && cd .. && rm -rf nginx-$NGINX_VERSION \
     && mkdir /var/cache/nginx \
