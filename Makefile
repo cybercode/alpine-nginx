@@ -1,5 +1,5 @@
 .PHONY: build
-ALPINE_VERSION := 3.6
+ALPINE_VERSION := 3.7
 
 .PHONY: build pull all
 
