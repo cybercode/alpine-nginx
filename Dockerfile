@@ -1,60 +1,42 @@
-ARG ALPINE_VERSION=3.7
-FROM alpine:$ALPINE_VERSION
+FROM alpine:latest
 
-RUN apk --update add pcre libbz2 ca-certificates libressl && rm /var/cache/apk/*
+ENV NGINX_VERSION=1.14.0
 
-RUN adduser -h /etc/nginx -D -s /bin/sh nginx
+RUN apk --update add g++ git libxml2-dev libxslt-dev wget make perl \
+    && mkdir Projetos \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/src \
+    && rm -rf /var/cache/apk/*
+
 WORKDIR /tmp
 
-ENV NGINX_VERSION=1.13.12
-
-# add compilation env, build required C based gems and cleanup
-RUN apk --update add --virtual build_deps build-base zlib-dev pcre-dev libressl-dev \
-    && wget -O - https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz | tar xzf - \
-    && cd nginx-$NGINX_VERSION && ./configure \
-       --prefix=/usr/share/nginx \
-       --sbin-path=/usr/sbin/nginx \
-       --conf-path=/etc/nginx/nginx.conf \
-       --error-log-path=stderr \
-       --http-log-path=/dev/stdout \
-       --pid-path=/var/run/nginx.pid \
-       --lock-path=/var/run/nginx.lock \
-       --http-client-body-temp-path=/var/cache/nginx/client_temp \
-       --http-proxy-temp-path=/var/cache/nginx/proxy_temp \
-       --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
-       --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp \
-       --http-scgi-temp-path=/var/cache/nginx/scgi_temp \
-       --user=nginx \
-       --group=nginx \
-       --with-http_addition_module \
-       --with-http_auth_request_module \
-       --with-http_gunzip_module \
-       --with-http_gzip_static_module \
-       --with-http_realip_module \
-       --with-http_ssl_module \
-       --with-http_stub_status_module \
-       --with-http_sub_module \
-       --with-http_v2_module \
-       --with-threads \
-       --with-stream \
-       --with-stream_ssl_module \
-       --without-http_memcached_module \
-       --without-mail_pop3_module \
-       --without-mail_imap_module \
-       --without-mail_smtp_module \
-       --with-pcre-jit \
-       --with-cc-opt='-g -O2 -fstack-protector-strong -Wformat -Werror=format-security' \
-       --with-ld-opt='-Wl,-z,relro -Wl,--as-needed' \
+RUN wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.42.tar.gz && tar -zxf pcre-8.42.tar.gz \
+    && cd pcre-8.42 && ./configure \
     && make install \
-    && cd .. && rm -rf nginx-$NGINX_VERSION \
-    && mkdir /var/cache/nginx \
-    && rm /etc/nginx/*.default \
-    && apk del build_deps && rm /var/cache/apk/*
+    && cd .. \
+    && wget http://zlib.net/zlib-1.2.11.tar.gz && tar -zxf zlib-1.2.11.tar.gz \
+    && cd zlib-1.2.11 && ./configure \
+    && make install \
+    && cd .. \
+    && wget http://www.openssl.org/source/openssl-1.0.2o.tar.gz && tar -zxf openssl-1.0.2o.tar.gz \
+    && git clone https://github.com/jcu-eresearch/nginx-custom-build.git \    
+    && wget https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz && tar zxf nginx-$NGINX_VERSION.tar.gz \
+    && cd nginx-$NGINX_VERSION \
+    && patch -p1 < ../nginx-custom-build/nginx-xslt-html-parser.patch \
+    && ./configure \
+        --error-log-path=/dev/stderr \
+        --http-log-path=/dev/stdout \
+        --with-pcre \
+        --with-http_xslt_module \
+        --with-http_ssl_module  \
+        --with-openssl=../openssl-1.0.2o/ \     
+        && make \
+        && make install \
+        && cd .. && rm -rf /tmp/* \
+        && apk del git wget make perl 
 
-COPY nginx.conf /etc/nginx/
-ADD  conf.d /etc/nginx/conf.d
+WORKDIR /Projetos/
 
-VOLUME ["/var/cache/nginx"]
+ENV PATH /usr/local/nginx/sbin/:$PATH
+
 EXPOSE 80 443
-
-CMD ["nginx"]
