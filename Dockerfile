@@ -1,8 +1,8 @@
 FROM alpine:latest
 
-ENV NGINX_VERSION=1.14.0
+ENV NGINX_VERSION=1.14.2 
 
-RUN apk --update add g++ git libxml2-dev libxslt-dev wget make perl \
+RUN apk --update add g++ git libxml2-dev libxslt-dev wget make perl-dev \
     && mkdir Projetos \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/src \
@@ -29,11 +29,12 @@ RUN wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.42.tar.gz 
         --with-pcre \
         --with-http_xslt_module \
         --with-http_ssl_module  \
-        --with-openssl=../openssl-1.0.2o/ \     
+        --with-openssl=../openssl-1.0.2o/ \  
+        --with-http_perl_module \   
         && make \
         && make install \
         && cd .. && rm -rf /tmp/* \
-        && apk del git wget make perl 
+        && apk del git wget make 
 
 WORKDIR /Projetos/
 
