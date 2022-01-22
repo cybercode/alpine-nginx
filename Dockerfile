@@ -1,4 +1,4 @@
-ARG ALPINE_VERSION=3.10
+ARG ALPINE_VERSION
 FROM alpine:$ALPINE_VERSION
 
 RUN apk --update add pcre libbz2 ca-certificates libressl && rm /var/cache/apk/*

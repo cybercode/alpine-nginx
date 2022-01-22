@@ -1,6 +1,6 @@
 .PHONY: build
-ALPINE_VERSION := 3.10
-NGINX_VERSION := 1.16.1
+ALPINE_VERSION := 3.15
+NGINX_VERSION := 1.20.2
 
 .PHONY: build pull all
 
